@@ -1,9 +1,11 @@
+import { useMutation } from '@tanstack/react-query'
 import { Helmet } from 'react-helmet-async'
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
+import { signIn } from '@/api/sign-in'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,10 +23,16 @@ export function SignIn() {
     formState: { isSubmitting },
   } = useForm<SignInForm>()
 
-  function handleSignIn(data: SignInForm) {
-    console.log(data)
+  // mutação é qualquer ação que não seja uma ação de retorno. Ex. criar algo, todo POST, PUT, DELETE
+  // mutateAsync => função que vamos chamar para chamar a função signIn
+  const { mutateAsync: authenticate } = useMutation({
+    mutationFn: signIn, // função disparada pra fazer a mutação
+  })
 
+  async function handleSignIn(data: SignInForm) {
     try {
+      await authenticate({ email: data.email })
+
       toast.success('Enviamos um link de autenticação para seu email.', {
         action: {
           label: 'Reenviar',
