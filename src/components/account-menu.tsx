@@ -1,4 +1,8 @@
+import { useQuery } from '@tanstack/react-query'
 import { Building, ChevronDown, LogOut } from 'lucide-react'
+
+import { getManagedRestaurant } from '@/api/get-managed-restaurant'
+import { getProfile } from '@/api/get-profile'
 
 import { Button } from './ui/button'
 import {
@@ -11,6 +15,17 @@ import {
 } from './ui/dropdown-menu'
 
 export function AccountMenu() {
+  // data são os dados que a requisição buscou
+  const { data: profile } = useQuery({
+    queryKey: ['profile'], // ele usa isso como chave para fazer a deduplicação de req http. Ex. quando precisamos buscar o perfil de usuário logado em vários lugares da aplicação ele usa isso para identificar que é a mesma req sendo chamada em vários locais
+    queryFn: getProfile, // função disparada pra fazer o GET no back-end
+  })
+
+  const { data: managedRestaurant } = useQuery({
+    queryKey: ['managed-restaurant'],
+    queryFn: getManagedRestaurant,
+  })
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -18,15 +33,15 @@ export function AccountMenu() {
           variant="outline"
           className="flex select-none items-center gap-2"
         >
-          Pizza Shop
+          {managedRestaurant?.name}
           <ChevronDown className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col">
-          <span>Eduardo Tavares</span>
+          <span>{profile?.name}</span>
           <span className="text-xs font-normal text-muted-foreground">
-            edutav.dev@gmail.com
+            {profile?.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
