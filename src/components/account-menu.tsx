@@ -82,3 +82,9 @@ export function AccountMenu() {
     </Dialog>
   )
 }
+
+/*
+  - Local State: estados internos dos componentes (useState)
+  - HTTP State: estado dos dados retornados pelas requisições HTTP
+  - Global State: estados globais acessados por vários componentes da app (Zustand, Redux, Jotai)
+*/
